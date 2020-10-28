@@ -9,6 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNetCore.Proxy
 {
+#pragma warning disable CS1591
+    public static class PublicExtensions
+    {
+        public static async Task ExecuteProxy(this HttpContext context, string uri, ProxyOptions options = null)
+        {
+            await context.ExecuteProxyOperationAsync(uri, options);
+        }
+    }
+#pragma warning restore CS1591
+
     internal static class HttpExtensions
     {
         internal static async Task ExecuteHttpProxyOperationAsync(this HttpContext context, string uri, ProxyOptions options = null)
@@ -21,7 +31,7 @@ namespace AspNetCore.Proxy
 
             if(options?.BeforeSend != null)
                 await options.BeforeSend(context, proxiedRequest).ConfigureAwait(false);
-            var proxiedResponse = await context
+                var proxiedResponse = await context
                 .SendProxiedHttpRequestAsync(proxiedRequest, options?.HttpClientName ?? Helpers.HttpProxyClientName)
                 .ConfigureAwait(false);
 
